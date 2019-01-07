@@ -1,5 +1,8 @@
 import tkinter as tk
 
+from vues.choixParametres import ChoixParametre
+from vues.choixInstruments import ChoixInstrument
+
 
 class Window_parametre(tk.Toplevel):
 
@@ -30,6 +33,13 @@ class Window_parametre(tk.Toplevel):
 		self.cadreInstruments = tk.LabelFrame(self, text="Choix des instruments d'acquisition")
 		self.cadreInstruments.pack(side=tk.TOP, fill='both', expand=1)
 
+		#Gestion du GBF
+		self.cadreGBF = ChoixInstrument(self.cadreInstruments, "GBF")
+		self.cadreGBF.pack(side=tk.TOP)
+
+
+
+
 
 		#-------------------Boutons de validation
 
@@ -47,45 +57,9 @@ class Window_parametre(tk.Toplevel):
 
 
 
-class ChoixParametre(tk.Frame):
-
-	def __init__(self, parent, labelParametre, variableParametre, window_parametre, **kwargs):
-		
-		super().__init__(parent, **kwargs)
-
-		self.window_parametre = window_parametre
-		self.variableParametre = variableParametre
-		self.labelParametre = labelParametre
 
 
-		self.cadreErreur = tk.Frame(self)
-		self.messageErreur = tk.Label(self.cadreErreur, text="Le paramètre doit être un entier", fg='red')
-		self.messageErreur.pack(side=tk.TOP)
 
-		self.cadreNormal = tk.Frame(self)
-		self.cadreNormal.pack(side=tk.TOP)
-
-		self.text = tk.Label(self.cadreNormal, text = 'Choix de '+labelParametre+' = ')
-		self.text.pack(side=tk.LEFT)
-		self.saisiParametre = tk.Entry(self.cadreNormal, textvariable=variableParametre, 
-										justify='left')
-		self.saisiParametre.pack(side=tk.LEFT)
-
-		variableParametre.trace('w', self.testChiffres)
-
-
-	def testChiffres(self, *args):
-		#On désaffiche le message d'erreur (si il était affiché)		
-		self.cadreErreur.forget()
-
-		#On teste l'erreur, si il y en a une on affiche le message d'erreur
-		try:
-			int(self.variableParametre.get())
-		except Exception as e:
-			self.cadreErreur.pack(side=tk.TOP, before=self.cadreNormal)
-			#et on déactive le bouton de validation :
-			self.window_parametre.boutonValidation.config(default = 'disabled')
-			
 
 		
 		
