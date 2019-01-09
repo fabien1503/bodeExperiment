@@ -15,6 +15,23 @@ class ChoixInstrument(tk.Frame):
 		self.text = tk.Label(self, text="Choix "+instrument)
 		self.text.pack(side=tk.LEFT)
 
-		self.varInstrument = tk.StringVar()
-		self.optionInstrument = tk.OptionMenu(self, self.varInstrument, *self.listeInstruments)
+		self.varInstrument = tk.StringVar(name=instrument)
+		self.optionInstrument = tk.OptionMenu(self, self.varInstrument, '', *self.listeInstruments)
+		self.optionInstrument.pack(side=tk.LEFT)
+
+		self.varInstrument.trace('w', self.instrumentVerification)
+
+
+
+
+
+
+
+	#Alias de la fonction ic.instrumentVerification pour lui passer la variable self.varInstrument
+	def instrumentVerification(self, instrument, *args):
+		if self.instrumentsController.instrumentVerification(instrument, self.varInstrument):
+			print('instrument Vérifié')
+		else :
+			print('instrument non valide')
+
 
