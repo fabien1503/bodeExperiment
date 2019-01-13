@@ -35,7 +35,11 @@ class Window_parametre(tk.Toplevel):
 
 		#Gestion du GBF
 		self.cadreGBF = ChoixInstrument(self.cadreInstruments, "GBF")
-		self.cadreGBF.pack(side=tk.TOP)
+		self.cadreGBF.pack(side=tk.TOP, fill='y', expand=1)
+
+		#Gestion de l'Oscillo
+		self.cadreOscillo = ChoixInstrument(self.cadreInstruments, "Oscillo")
+		self.cadreOscillo.pack(side=tk.TOP, fill='y', expand=1)
 
 
 

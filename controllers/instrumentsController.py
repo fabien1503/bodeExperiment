@@ -2,21 +2,31 @@ import visa
 from pyvisa.errors import VisaIOError
 import re
 
-class InstrumentController():
-
-	def __init__(self):
-		self.ic = visa.ResourceManager()
-
+class InstrumentController(visa.ResourceManager):
 
 	def listeInstruments(self):
-		return self.ic.list_resources()
+		return self.list_resources()
 
-	def instrumentVerification(self, instrument, varInstrument):
-
-		listeInstrumentsSupporte = self.listeInstrumentsSupporte(instrument)
+	def checkConnexion(self, instrument, varInstrument):
 
 		try:
-			instru = self.ic.open_resource(varInstrument.get(), baud_rate=19200)
+			instru = self.getInstru(varInstrument)
+		except VisaIOError as e:
+			print(e)
+			return False
+		finally:
+			try:
+				instru.close()
+			except UnboundLocalError as e:
+				pass
+
+		return True
+
+
+	def checkCommunication(self, instrument, varInstrument):
+
+		try:
+			instru = self.getInstru(varInstrument)
 			idnInstru = instru.query('*idn?').split(",")[0] #On ne garde que le nom de l'appareil
 		except VisaIOError as e:
 			print(e)
@@ -27,9 +37,18 @@ class InstrumentController():
 			except UnboundLocalError as e:
 				pass
 
-		if idnInstru in listeInstrumentsSupporte :
-			return True
-		else : return False
+		return True
+
+	def checkReconnaissance(self, instrument, varInstrument):
+		pass
+
+	def getInstru(self, varInstrument):
+		#Si c'est un instrument port COM on précise le baud rate
+		if re.match('^ASRL', varInstrument):
+			return self.open_resource(varInstrument, baud_rate=19200)
+		#Si c'est un intrument USB on ne précise pas le baud rate
+		if re.match('^USB', varInstrument):
+			return self.open_resource(varInstrument)
 
 	def listeInstrumentsSupporte(self, instrument):
 
