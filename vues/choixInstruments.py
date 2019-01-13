@@ -8,9 +8,11 @@ class ChoixInstrument(tk.Frame):
 	def __init__(self, parent, instrument):
 
 		super().__init__(parent)
-		self.instrumentsController = ic.InstrumentController()
 
+		self.instrumentsController = ic.InstrumentController()
 		self.listeInstruments = self.instrumentsController.listeInstruments()
+
+		self.instrument = instrument
 
 		self.frameChoix = tk.Frame(self)
 		self.frameChoix.pack(side=tk.TOP)
@@ -51,7 +53,7 @@ class ChoixInstrument(tk.Frame):
 
 
 	#Lance tous les tests (connexion, comm et Reconnaissance) de l'instrument
-	def instrumentVerification(self, instrument, *args):
+	def instrumentVerification(self, *args):
 		listeVerifs = ['Connexion', 'Communication', 'Reconnaissance']
 
 		for index, verif in enumerate(listeVerifs):
@@ -59,7 +61,7 @@ class ChoixInstrument(tk.Frame):
 			verifLabel.grid_forget()
 			verifLabel.destroy()
 			
-			if getattr(self.instrumentsController, 'check'+verif)(instrument, self.varInstrument):
+			if getattr(self.instrumentsController, 'check'+verif)(self.instrument, self.varInstrument):
 				setattr(self, 'label'+verif+'Result', self.ConstructionLabelResult('OK', self.frameCheck))
 				exec('self.label'+verif+'Result.grid(column=1, row=index)')
 			else:

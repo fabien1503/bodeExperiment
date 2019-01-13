@@ -1,6 +1,7 @@
 import visa 
 from pyvisa.errors import VisaIOError
 import re
+import os
 
 class InstrumentController(visa.ResourceManager):
 
@@ -27,7 +28,7 @@ class InstrumentController(visa.ResourceManager):
 
 		try:
 			instru = self.getInstru(varInstrument)
-			idnInstru = instru.query('*idn?').split(",")[0] #On ne garde que le nom de l'appareil
+			self.idnInstru = instru.query('*idn?').split(",")[0] #On ne garde que le nom de l'appareil
 		except VisaIOError as e:
 			print(e)
 			return False
@@ -40,7 +41,13 @@ class InstrumentController(visa.ResourceManager):
 		return True
 
 	def checkReconnaissance(self, instrument, varInstrument):
-		pass
+		try:
+			if self.idnInstru in self.listeInstrumentsSupporte(instrument):
+				return True
+			else : return False
+		except AttributeError as e:
+			return False
+		
 
 	def getInstru(self, varInstrument):
 		#Si c'est un instrument port COM on précise le baud rate
@@ -52,15 +59,10 @@ class InstrumentController(visa.ResourceManager):
 
 	def listeInstrumentsSupporte(self, instrument):
 
-		with open('config/'+instrument+'supporte.txt', 'r') as fichier:
-			listeInstrumentsSupporte = self.nettoyageListeInstrumentsSupporte(fichier.readlines())
+		listeFichiersSupportInstru = os.listdir('config/'+instrument+'supporte/')
+		listeInstrumentsSupporte = list()
+
+		for fichier in listeFichiersSupportInstru :
+			listeInstrumentsSupporte.append(re.sub('(.py)$', '', re.sub('_', ' ', fichier)))
 
 		return listeInstrumentsSupporte
-
-	#Fonction permettant de supprimer le \n en fin de ligne
-	def nettoyageListeInstrumentsSupporte(self, listeInstruments):
-		listeInstrumentsNettoye = list()
-		for instrumentString in listeInstruments:
-			listeInstrumentsNettoye.append(re.sub(r'(\n)$', '', instrumentString))
-
-		return listeInstrumentsNettoye

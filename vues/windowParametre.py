@@ -19,14 +19,17 @@ class Window_parametre(tk.Toplevel):
 		self.cadreParametres = tk.LabelFrame(self, text="Choix des paramètres d'acquisition")
 		self.cadreParametres.pack(side=tk.TOP, fill='x')
 
+		self.cadreGrille = tk.Frame(self.cadreParametres)
+		self.cadreGrille.pack(side=tk.TOP)
 		#Boucle pour créer les Paramètres d'acquisitions
 		self.parametre = dict()
 		self.Select = dict()
+		compteur = 0
 
 		for cle, valeur in self.parametreAcquisition.items():
 			self.parametre[cle] = tk.IntVar(value=self.parametreAcquisition[cle])
-			self.Select[cle] = ChoixParametre(self.cadreParametres, cle, self.parametre[cle], self)
-			self.Select[cle].pack(side=tk.TOP)
+			self.Select[cle] = ChoixParametre(self.cadreGrille, cle, self.parametre[cle], self, compteur)
+			compteur += 1
 
 		#-------------------Choix des instruments d'acquisition
 
