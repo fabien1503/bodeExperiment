@@ -70,6 +70,10 @@ class ChoixInstrument(tk.Frame):
 				setattr(self, 'label'+verif+'Result', self.ConstructionLabelResult('ECHEC', self.frameCheck))
 				exec('self.label'+verif+'Result.grid(column=1, row=index)')
 
+		#Si la dernière vérification est passée, on garde le nom de l'appareil en mémoire	
+		if verifications[2]:
+			self.idnInstru = verifications[3]
+
 
 	def ConstructionLabelResult(self, resultat, parent):
 		labelResultat = tk.Label(parent)

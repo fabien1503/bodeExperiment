@@ -1,13 +1,24 @@
 import tkinter as tk
+import re
 
 from vues.choixParametres import ChoixParametre
 from vues.choixInstruments import ChoixInstrument
+
+import controllers.instrumentsController as ic
 
 
 class Window_parametre(tk.Toplevel):
 
 	def __init__(self, appli):
+		self.appli = appli
 		self.parametreAcquisition = appli.acquisitionParametre
+
+		self.instruController = ic.InstrumentController()
+
+
+		self.appli.GBF = None
+		self.appli.oscillo = None
+		
 
 		#On commence par créer la nouvelle fenêtre
 		super().__init__(appli.fenetre_princ, padx=4, pady=4)
@@ -27,7 +38,7 @@ class Window_parametre(tk.Toplevel):
 		compteur = 0
 
 		for cle, valeur in self.parametreAcquisition.items():
-			self.parametre[cle] = tk.IntVar(value=self.parametreAcquisition[cle])
+			self.parametre[cle] = tk.IntVar(value=valeur)
 			self.Select[cle] = ChoixParametre(self.cadreGrille, cle, self.parametre[cle], self, compteur)
 			compteur += 1
 
@@ -53,11 +64,42 @@ class Window_parametre(tk.Toplevel):
 		self.cadreBouton = tk.Frame(self)
 		self.cadreBouton.pack(side=tk.BOTTOM)
 
-		self.boutonValidation = tk.Button(self.cadreBouton, text='Valider')
+		self.boutonValidation = tk.Button(self.cadreBouton, text='Valider', command=self.validation)
 		self.boutonValidation.pack(side=tk.RIGHT)
 
 		self.boutonAnnuler = tk.Button(self.cadreBouton, text='Annuler', command=self.destroy)
 		self.boutonAnnuler.pack(side=tk.RIGHT)
+
+
+
+	def validation(self):
+
+		#On met à jour les paramètres d'acquisition
+		for cle, valeur in self.parametre.items():
+			self.parametreAcquisition[cle] = valeur.get()
+
+		#On instancie les appareils de mesure
+		moduleGBF = "config.GBFsupporte."+re.sub(' ','_', self.cadreGBF.idnInstru)
+		exec("import "+moduleGBF)
+		exec("self.appli.GBF = self.instruController.getInstru(self.cadreGBF.varInstrument, resource_pyclass="+moduleGBF+".GBF)")
+
+		moduleOscillo = "config.Oscillosupporte."+re.sub(' ','_', self.cadreOscillo.idnInstru)
+		exec("import "+moduleOscillo)
+		exec("self.appli.oscillo = self.instruController.getInstru(self.cadreOscillo.varInstrument, resource_pyclass="+moduleOscillo+".Oscillo)")
+
+		#On met les appareils dans leur état de départ
+		print(self.appli.GBF)
+		self.appli.GBF.initialisation()
+		self.appli.oscillo.initialisation()
+
+
+		#On dessine le nouveau graphique
+		self.appli.fenetre_princ.majEchelle()
+		#On ferme la fenêtre de paramètre :
+		self.destroy()
+
+
+
 
 
 	

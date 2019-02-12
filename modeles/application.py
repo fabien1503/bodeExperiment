@@ -1,6 +1,7 @@
 import vues.fenetre_princ as main_fene
+from singleton_decorator import singleton
 
-
+@singleton
 class Appli():
 
 	def __init__(self):
@@ -12,6 +13,9 @@ class Appli():
 
 		#---------On définit la fenêtre principale------------------#
 		self.fenetre_princ = main_fene.Fenetre_princ(self)
+
+		self.GBF = None
+		self.oscillo = None
 
 	
 	def run(self):

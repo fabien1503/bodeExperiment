@@ -17,7 +17,7 @@ class InstrumentController(visa.ResourceManager):
 			return (False, False, False)
 		else:
 			try:
-				idnInstru = instru.query('*idn?').split(",")[0] #On ne garde que le nom de l'appareil
+				idnInstru = instru.query('*idn?') 
 			except VisaIOError as e: #Erreur lors de la communication
 				print(e)
 				return (True, False, False)
@@ -28,8 +28,9 @@ class InstrumentController(visa.ResourceManager):
 				pass
 
 		try:
-			if idnInstru in self.listeInstrumentsSupporte(instrument):
-				return (True, True, True)
+			for instrumentSupporte in self.listeInstrumentsSupporte(instrument):
+				if re.search(instrumentSupporte, re.sub('-', '', idnInstru)): #On teste si le nom de l'appareil apparait dans l'idn
+					return (True, True, True, instrumentSupporte)
 			else : return (True, True, False)# Instrument non reconnu
 		except AttributeError as e:
 			return (True, True, False)# Instrument non reconnu
