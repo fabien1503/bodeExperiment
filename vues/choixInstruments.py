@@ -56,12 +56,14 @@ class ChoixInstrument(tk.Frame):
 	def instrumentVerification(self, *args):
 		listeVerifs = ['Connexion', 'Communication', 'Reconnaissance']
 
+		verifications = self.instrumentsController.checkInstrument(self.instrument, self.varInstrument)
+
 		for index, verif in enumerate(listeVerifs):
 			verifLabel = getattr(self, 'label'+verif+'Result')
 			verifLabel.grid_forget()
 			verifLabel.destroy()
 			
-			if getattr(self.instrumentsController, 'check'+verif)(self.instrument, self.varInstrument):
+			if verifications[index]:
 				setattr(self, 'label'+verif+'Result', self.ConstructionLabelResult('OK', self.frameCheck))
 				exec('self.label'+verif+'Result.grid(column=1, row=index)')
 			else:

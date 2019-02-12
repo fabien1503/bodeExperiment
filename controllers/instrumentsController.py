@@ -8,54 +8,40 @@ class InstrumentController(visa.ResourceManager):
 	def listeInstruments(self):
 		return self.list_resources()
 
-	def checkConnexion(self, instrument, varInstrument):
+	def checkInstrument(self, instrument, varInstrument):
 
 		try:
 			instru = self.getInstru(varInstrument)
-		except VisaIOError as e:
+		except VisaIOError as e: #Erreur lors de la connexion
 			print(e)
-			return False
+			return (False, False, False)
+		else:
+			try:
+				idnInstru = instru.query('*idn?').split(",")[0] #On ne garde que le nom de l'appareil
+			except VisaIOError as e: #Erreur lors de la communication
+				print(e)
+				return (True, False, False)
 		finally:
 			try:
 				instru.close()
 			except UnboundLocalError as e:
 				pass
 
-		return True
-
-
-	def checkCommunication(self, instrument, varInstrument):
-
 		try:
-			instru = self.getInstru(varInstrument)
-			self.idnInstru = instru.query('*idn?').split(",")[0] #On ne garde que le nom de l'appareil
-		except VisaIOError as e:
-			print(e)
-			return False
-		finally:
-			try:
-				instru.close()
-			except UnboundLocalError as e:
-				pass
-
-		return True
-
-	def checkReconnaissance(self, instrument, varInstrument):
-		try:
-			if self.idnInstru in self.listeInstrumentsSupporte(instrument):
-				return True
-			else : return False
+			if idnInstru in self.listeInstrumentsSupporte(instrument):
+				return (True, True, True)
+			else : return (True, True, False)# Instrument non reconnu
 		except AttributeError as e:
-			return False
+			return (True, True, False)# Instrument non reconnu
 		
 
-	def getInstru(self, varInstrument):
+	def getInstru(self, varInstrument, baud=19200, **kargs):
 		#Si c'est un instrument port COM on précise le baud rate
 		if re.match('^ASRL', varInstrument):
-			return self.open_resource(varInstrument, baud_rate=19200)
+			return self.open_resource(varInstrument, baud_rate=baud, **kargs)
 		#Si c'est un intrument USB on ne précise pas le baud rate
 		if re.match('^USB', varInstrument):
-			return self.open_resource(varInstrument)
+			return self.open_resource(varInstrument, **kargs)
 
 	def listeInstrumentsSupporte(self, instrument):
 
