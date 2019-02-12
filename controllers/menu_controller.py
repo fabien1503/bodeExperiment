@@ -8,3 +8,6 @@ class Menu_controller():
 
 	def afficher_menuParametre(self):
 		v_parametreWindow.Window_parametre(self.appli)
+
+	def lancer_acquisition(self):
+		self.appli.acquisition()

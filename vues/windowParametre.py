@@ -88,8 +88,7 @@ class Window_parametre(tk.Toplevel):
 		exec("self.appli.oscillo = self.instruController.getInstru(self.cadreOscillo.varInstrument, resource_pyclass="+moduleOscillo+".Oscillo)")
 
 		#On met les appareils dans leur état de départ
-		print(self.appli.GBF)
-		self.appli.GBF.initialisation()
+		self.appli.GBF.initialisation(self.appli.acquisitionParametre['F_min'])
 		self.appli.oscillo.initialisation()
 
 

@@ -20,8 +20,9 @@ class Menu(tk.Menu):
 		self.menu_acquisition = tk.Menu(self, tearoff=0)
 
 		self.menu_acquisition.add_command(label="Paramètres", command=self.controller.afficher_menuParametre)
-		self.menu_acquisition.add_command(label="Lancement")
+		self.menu_acquisition.add_command(label="Lancement", command=self.controller.lancer_acquisition, accelerator='F10')
 
+		self.menu_acquisition.bind_all('<Key-F10>', lambda event : self.controller.lancer_acquisition())
 
 
 		self.add_cascade(label="Fichier", menu=self.menu_fichier)

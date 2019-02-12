@@ -6,3 +6,4 @@ class BaseInstrument:
 
 	def __del__(self):
 		self.close()
+		super().__del__()
