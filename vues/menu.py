@@ -14,6 +14,8 @@ class Menu(tk.Menu):
 		#----Création du menu fichier----------------#
 		self.menu_fichier = tk.Menu(self, tearoff=0)
 
+		self.menu_fichier.add_command(label="Enregistrer courbe", command=self.controller.enregistrerCourbe)
+		self.menu_fichier.add_command(label="Supprimer courbes", command=self.controller.effacerCourbes)
 		self.menu_fichier.add_command(label="Quitter", command=parent.quit)
 
 		#----Création menu acquisition-------------------#
