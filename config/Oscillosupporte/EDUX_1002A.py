@@ -21,6 +21,14 @@ class Oscillo(USBInstrument, BaseOscillo):
 	SENSIBILITE_H = [i for i in sensibilityGenerator(-6,-2)]
 	SENSIBILITE_V = [i for i in sensibilityGenerator(-3,1)]
 
+	def initialisation(self):
+		super().initialisation()
+		self.averageMode(5)
+
+	def averageMode(self, nombre):
+		self.write('acquire:type average')
+		self.write('acquire:count '+str(nombre))
+
 	def setVoieDC(self, voie):
 		self.write('channel'+str(voie)+':coupling DC')
 

@@ -15,7 +15,7 @@ class Fenetre_princ(tk.Tk):
 		
 		#Construction de la fenetre princiaple
 		super().__init__()
-		self.geometry("1280x800")
+		self.geometry("1280x700+0+0")
 		self.title("Bode expérimental")
 
 		#--------------Construction du menu---------------#
